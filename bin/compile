@@ -5,8 +5,9 @@ BUILD_DIR=${1:-}
 CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
 
-if [ -f $ENV_DIR/PROJECT_PATH ]; then
+if [ -f $ENV_DIR/PROJECT_PATH  && -f $ENV_DIR/CLIENT_PATH]; then
 	PROJECT_PATH=`cat $ENV_DIR/PROJECT_PATH`
+	CLIENT_PATH=`cat $ENV_DIR/CLIENT_PATH
 	if [ -d $BUILD_DIR/$PROJECT_PATH ]; then
 		echo "-----> Subdir buildpack in $PROJECT_PATH"
 		echo "       creating cache: $CACHE_DIR"
@@ -15,6 +16,9 @@ if [ -f $ENV_DIR/PROJECT_PATH ]; then
 		echo "       created tmp dir: $TMP_DIR"
 		echo "       moving working dir: $PROJECT_PATH to $TMP_DIR"
 		cp -R $BUILD_DIR/$PROJECT_PATH/. $TMP_DIR/
+	 	echo "       cleaning build dir $BUILD_DIR"
+		echo "       moving client dir: $CLIENT_PATH to $TMP_DIR"
+		cp -R $BUILD_DIR/$CLIENT_PATH/. $TMP_DIR/
 	 	echo "       cleaning build dir $BUILD_DIR"
 		rm -rf $BUILD_DIR
 		echo "       recreating $BUILD_DIR"
@@ -27,7 +31,7 @@ if [ -f $ENV_DIR/PROJECT_PATH ]; then
 	fi
 fi
 
-echo "PROJECT_PATH is undefined"
+echo "PROJECT_PATH or CLIENT_PATH is undefined"
 exit 1
 
 
